@@ -1,6 +1,8 @@
 <?php
 
-session_start();
+require_once __DIR__ . "/../config/helpers.php";
+require_admin();
+start_session_if_needed();
 
 require_once __DIR__ . "/../Model/CategoryModel.php";
 
@@ -42,8 +44,7 @@ if (isset($_GET["id"])) {
         $parent_id = $category["parent_id"];
         $pageTitle = "Edit Category";
     } else {
-        header("Location: categoryList.php?error=Category not found");
-        exit;
+        redirect("/admin/categories?error=" . urlencode("Category not found"));
     }
 }
 
@@ -70,19 +71,13 @@ if (!empty($oldInput)) {
 }
 
 $parentCategories = $categoryModel->getParentCategories();
+include __DIR__ . "/header.php";
 
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title><?php echo htmlspecialchars($pageTitle); ?></title>
-
-    <style>
-        body {
+<style>
+        .admin-page {
             font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-            margin: 0;
             padding: 20px;
         }
 
@@ -158,9 +153,8 @@ $parentCategories = $categoryModel->getParentCategories();
             margin-top: 5px;
         }
     </style>
-</head>
-<body>
 
+<div class="admin-page">
 <div class="container">
 
     <h2><?php echo htmlspecialchars($pageTitle); ?></h2>
@@ -171,7 +165,7 @@ $parentCategories = $categoryModel->getParentCategories();
         </div>
     <?php } ?>
 
-    <form method="post" action="../Controller/categorySave.php">
+    <form method="post" action="<?= $id !== "" ? url('/admin/categories/edit') : url('/admin/categories/create') ?>">
 
         <input type="hidden" name="id" value="<?php echo htmlspecialchars($id); ?>">
 
@@ -222,12 +216,12 @@ $parentCategories = $categoryModel->getParentCategories();
         <div class="button-row">
             <button type="submit" class="btn btn-save">Save Category</button>
 
-            <a href="categoryList.php" class="btn btn-back">Back</a>
+            <a href="<?= url('/admin/categories') ?>" class="btn btn-back">Back</a>
         </div>
 
     </form>
 
 </div>
 
-</body>
-</html>
+</div>
+<?php include __DIR__ . "/footer.php"; ?>

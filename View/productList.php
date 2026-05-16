@@ -1,22 +1,20 @@
 <?php
 
+require_once __DIR__ . "/../config/helpers.php";
 require_once __DIR__ . "/../Model/ProductModel.php";
+
+require_admin();
 
 $productModel = new ProductModel();
 $products = $productModel->getAllProducts();
+$pageTitle = "Product Management";
+include __DIR__ . "/header.php";
 
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Product List</title>
-
-    <style>
-        body {
+<style>
+        .admin-page {
             font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-            margin: 0;
             padding: 20px;
         }
 
@@ -153,9 +151,8 @@ $products = $productModel->getAllProducts();
             color: #666;
         }
     </style>
-</head>
-<body>
 
+<div class="admin-page">
 <div class="container">
 
     <h2>Product Management</h2>
@@ -171,9 +168,9 @@ $products = $productModel->getAllProducts();
     ?>
 
    <div class="top-bar">
-    <a class="btn btn-dashboard" href="adminDashboard.php">Dashboard</a>
-    <a class="btn btn-add" href="productForm.php">Add New Product</a>
-    <a class="btn btn-add" href="categoryList.php">Manage Categories</a>
+    <a class="btn btn-dashboard" href="<?= url('/admin/dashboard') ?>">Dashboard</a>
+    <a class="btn btn-add" href="<?= url('/admin/products/create') ?>">Add New Product</a>
+    <a class="btn btn-add" href="<?= url('/admin/categories') ?>">Manage Categories</a>
 </div>
 
     <?php if (empty($products)) { ?>
@@ -213,7 +210,7 @@ $products = $productModel->getAllProducts();
                     <td>
                         <?php if (!empty($product["primary_image_path"])) { ?>
                             <img class="product-img"
-                                 src="../<?php echo htmlspecialchars($product["primary_image_path"]); ?>"
+                                 src="<?= e(product_image_url($product["primary_image_path"])) ?>"
                                  alt="Product Image">
                         <?php } else { ?>
                             <span class="no-image">No image</span>
@@ -274,11 +271,11 @@ $products = $productModel->getAllProducts();
                     </td>
 
                     <td>
-                        <a class="btn btn-edit" href="productForm.php?id=<?php echo $product["id"]; ?>">
+                        <a class="btn btn-edit" href="<?= url('/admin/products/edit?id=' . $product["id"]) ?>">
                             Edit
                         </a>
                         <a class="btn btn-delete"
-                           href="../Controller/productDelete.php?id=<?php echo $product["id"]; ?>"
+                           href="<?= url('/admin/products/delete?id=' . $product["id"]) ?>"
                            onclick="return confirm('Are you sure you want to delete this product?');">
                             Delete
                         </a>
@@ -299,7 +296,7 @@ function toggleAvailability(productId) {
 
     var xhr = new XMLHttpRequest();
 
-    xhr.open("PATCH", "../Controller/productAvailabilityToggle.php", true);
+    xhr.open("PATCH", <?= json_encode(url('/api/products/')) ?> + productId + "/availability", true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
     xhr.onload = function () {
@@ -330,5 +327,5 @@ function toggleAvailability(productId) {
 }
 </script>
 
-</body>
-</html>
+</div>
+<?php include __DIR__ . "/footer.php"; ?>

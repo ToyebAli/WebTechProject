@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../config/helpers.php';
-require_once __DIR__ . '/../models/Product.php';
+require_once __DIR__ . '/../Model/Product.php';
 
 class ProductController {
     private Product $model;
@@ -12,16 +12,16 @@ class ProductController {
         $products   = $this->model->getAllAvailable($categoryId);
         $categories = $this->model->getCategories();
         $pageTitle  = 'Shop';
-        include __DIR__ . '/../views/shop/index.php';
+        include __DIR__ . '/../View/Shop/index.php';
     }
 
     public function show(): void {
         session_guard();
         $id      = isset($_GET['id']) ? (int)$_GET['id'] : 0;
         $product = $this->model->findById($id);
-        if (!$product) { http_response_code(404); include __DIR__ . '/../views/errors/404.php'; return; }
+        if (!$product) { http_response_code(404); include __DIR__ . '/../View/404.php'; return; }
         $pageTitle = e($product['name']);
-        include __DIR__ . '/../views/shop/show.php';
+        include __DIR__ . '/../View/Shop/show.php';
     }
 
     public function apiSearch(): void {
@@ -39,14 +39,7 @@ class ProductController {
 
     public function apiReviews(): void {
         session_guard();
-        $id  = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-        $pdo = $this->model->getConnection();
-        $s   = $pdo->prepare(
-            'SELECT r.*, u.name AS reviewer_name
-             FROM reviews r JOIN users u ON u.id = r.user_id
-             WHERE r.product_id = ? ORDER BY r.created_at DESC'
-        );
-        $s->execute([$id]);
-        json_response(['ok' => true, 'reviews' => $s->fetchAll()]);
+        // Task 4 is not part of this merge, so keep the endpoint harmless.
+        json_response(['ok' => true, 'reviews' => []]);
     }
 }

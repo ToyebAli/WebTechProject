@@ -1,6 +1,6 @@
 <?php
 if (!function_exists('e')) require_once __DIR__ . '/../../config/helpers.php';
-include __DIR__ . '/../layouts/header.php';
+include __DIR__ . '/../header.php';
 $total = 0;
 foreach ($cart as $pid => $qty)
     if (isset($products[$pid])) $total += $products[$pid]['price'] * $qty;
@@ -22,7 +22,7 @@ foreach ($cart as $pid => $qty)
       </svg>
       <h3>Your cart is empty</h3>
       <p>Browse the shop and add items to get started.</p>
-      <a href="/products" class="btn btn-primary">Browse Products</a>
+      <a href="<?= url('/products') ?>" class="btn btn-primary">Browse Products</a>
     </div>
   <?php else: ?>
     <div style="display:grid;grid-template-columns:1fr 340px;gap:var(--s8);align-items:start">
@@ -36,7 +36,7 @@ foreach ($cart as $pid => $qty)
         ?>
         <div id="row-<?= (int)$pid ?>" class="c-row">
           <?php if ($p['primary_image_path']): ?>
-            <img src="/public/uploads/products/<?= e($p['primary_image_path']) ?>"
+            <img src="<?= e(product_image_url($p['primary_image_path'])) ?>"
                  alt="<?= e($p['name']) ?>"
                  style="width:88px;height:88px;object-fit:cover;border-radius:var(--rmd);
                         border:1px solid var(--border);flex-shrink:0"
@@ -53,7 +53,7 @@ foreach ($cart as $pid => $qty)
           <?php endif; ?>
 
           <div style="flex:1;min-width:0">
-            <a href="/products/show?id=<?= (int)$pid ?>"
+            <a href="<?= url('/products/show?id=' . (int)$pid) ?>"
                style="font-weight:700;color:var(--text);text-decoration:none;
                       display:block;margin-bottom:var(--s1)"><?= e($p['name']) ?></a>
             <div style="font-size:var(--sm);color:var(--muted);margin-bottom:var(--s3)">
@@ -106,10 +106,10 @@ foreach ($cart as $pid => $qty)
             <span>Total</span>
             <span id="grand-total" style="color:var(--primary)">৳<?= number_format($total,2) ?></span>
           </div>
-          <a href="/checkout" class="btn btn-primary btn-full btn-lg">
+          <a href="<?= url('/checkout') ?>" class="btn btn-primary btn-full btn-lg">
             Proceed to Checkout
           </a>
-          <a href="/products" class="btn btn-sec btn-full" style="margin-top:var(--s3)">
+          <a href="<?= url('/products') ?>" class="btn btn-sec btn-full" style="margin-top:var(--s3)">
             Continue Shopping
           </a>
         </div>
@@ -129,10 +129,11 @@ foreach ($cart as $pid => $qty)
 
 <script>
 const badge = document.getElementById('cart-badge');
+const routeBase = <?= json_encode(rtrim(url('/'), '/')) ?>;
 
 function updateCart(pid, action) {
   const fd = new FormData(); fd.append('product_id',pid); fd.append('action',action);
-  fetch('/api/cart/update',{method:'POST',body:fd,headers:{'X-Requested-With':'XMLHttpRequest'}})
+  fetch(routeBase + '/api/cart/update',{method:'POST',body:fd,headers:{'X-Requested-With':'XMLHttpRequest'}})
     .then(r=>r.json()).then(d=>{
       if (!d.ok) { alert(d.message||'Error'); return; }
       if (d.qty === 0) {
@@ -152,7 +153,7 @@ function updateCart(pid, action) {
 
 function removeItem(pid) {
   const fd = new FormData(); fd.append('product_id',pid);
-  fetch('/api/cart/remove',{method:'POST',body:fd,headers:{'X-Requested-With':'XMLHttpRequest'}})
+  fetch(routeBase + '/api/cart/remove',{method:'POST',body:fd,headers:{'X-Requested-With':'XMLHttpRequest'}})
     .then(r=>r.json()).then(d=>{
       if (!d.ok) { alert(d.message||'Error'); return; }
       const row = document.getElementById('row-'+pid);
@@ -165,4 +166,4 @@ function removeItem(pid) {
     }).catch(console.error);
 }
 </script>
-<?php include __DIR__ . '/../layouts/footer.php'; ?>
+<?php include __DIR__ . '/../footer.php'; ?>

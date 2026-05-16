@@ -1,14 +1,15 @@
 <?php
 
-session_start();
+require_once __DIR__ . "/../config/helpers.php";
+require_admin();
+start_session_if_needed();
 
 require_once __DIR__ . "/../Model/CategoryModel.php";
 
 $categoryModel = new CategoryModel();
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-    header("Location: ../View/categoryList.php");
-    exit;
+    redirect("/admin/categories");
 }
 
 $id = "";
@@ -33,12 +34,10 @@ function redirectCategoryFormWithErrors($id, $oldInput, $errors)
     $_SESSION["category_errors"] = $errors;
 
     if ($id !== "") {
-        header("Location: ../View/categoryForm.php?id=" . urlencode($id));
+        redirect("/admin/categories/edit?id=" . urlencode($id));
     } else {
-        header("Location: ../View/categoryForm.php");
+        redirect("/admin/categories/create");
     }
-
-    exit;
 }
 
 $oldInput = [
@@ -90,8 +89,7 @@ if ($id === "") {
     $success = $categoryModel->addCategory($name, $parent_id_for_save);
 
     if ($success) {
-        header("Location: ../View/categoryList.php?success=" . urlencode("Category added successfully"));
-        exit;
+        redirect("/admin/categories?success=" . urlencode("Category added successfully"));
     } else {
         $errors["general"] = "Failed to add category";
         redirectCategoryFormWithErrors($id, $oldInput, $errors);
@@ -102,15 +100,13 @@ if ($id === "") {
     $existingCategory = $categoryModel->getCategoryById($id);
 
     if (!$existingCategory) {
-        header("Location: ../View/categoryList.php?error=" . urlencode("Category not found"));
-        exit;
+        redirect("/admin/categories?error=" . urlencode("Category not found"));
     }
 
     $success = $categoryModel->updateCategory($id, $name, $parent_id_for_save);
 
     if ($success) {
-        header("Location: ../View/categoryList.php?success=" . urlencode("Category updated successfully"));
-        exit;
+        redirect("/admin/categories?success=" . urlencode("Category updated successfully"));
     } else {
         $errors["general"] = "Failed to update category";
         redirectCategoryFormWithErrors($id, $oldInput, $errors);

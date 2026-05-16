@@ -1,49 +1,45 @@
 <?php
 
+require_once __DIR__ . "/../config/helpers.php";
 require_once __DIR__ . "/../Model/CategoryModel.php";
+
+require_admin();
 
 $categoryModel = new CategoryModel();
 
 if (!isset($_GET["id"])) {
-    header("Location: ../View/categoryList.php?error=" . urlencode("Category ID is missing"));
-    exit;
+    redirect("/admin/categories?error=" . urlencode("Category ID is missing"));
 }
 
 $id = intval($_GET["id"]);
 
 if ($id <= 0) {
-    header("Location: ../View/categoryList.php?error=" . urlencode("Invalid category ID"));
-    exit;
+    redirect("/admin/categories?error=" . urlencode("Invalid category ID"));
 }
 
 $category = $categoryModel->getCategoryById($id);
 
 if (!$category) {
-    header("Location: ../View/categoryList.php?error=" . urlencode("Category not found"));
-    exit;
+    redirect("/admin/categories?error=" . urlencode("Category not found"));
 }
 
 $childCount = $categoryModel->countChildCategories($id);
 $productCount = $categoryModel->countProductsByCategory($id);
 
 if ($childCount > 0) {
-    header("Location: ../View/categoryList.php?error=" . urlencode("Cannot delete this category because it has child categories"));
-    exit;
+    redirect("/admin/categories?error=" . urlencode("Cannot delete this category because it has child categories"));
 }
 
 if ($productCount > 0) {
-    header("Location: ../View/categoryList.php?error=" . urlencode("Cannot delete this category because products are using it"));
-    exit;
+    redirect("/admin/categories?error=" . urlencode("Cannot delete this category because products are using it"));
 }
 
 $success = $categoryModel->deleteCategory($id);
 
 if ($success) {
-    header("Location: ../View/categoryList.php?success=" . urlencode("Category deleted successfully"));
-    exit;
+    redirect("/admin/categories?success=" . urlencode("Category deleted successfully"));
 } else {
-    header("Location: ../View/categoryList.php?error=" . urlencode("Failed to delete category"));
-    exit;
+    redirect("/admin/categories?error=" . urlencode("Failed to delete category"));
 }
 
 ?>

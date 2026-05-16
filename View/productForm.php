@@ -1,6 +1,8 @@
 <?php
 
-session_start();
+require_once __DIR__ . "/../config/helpers.php";
+require_admin();
+start_session_if_needed();
 
 require_once __DIR__ . "/../Model/ProductModel.php";
 
@@ -57,8 +59,7 @@ if (isset($_GET["id"])) {
         $is_available = $product["is_available"];
         $pageTitle = "Edit Product";
     } else {
-        header("Location: productList.php?error=Product not found");
-        exit;
+        redirect("/admin/products?error=" . urlencode("Product not found"));
     }
 }
 
@@ -93,19 +94,13 @@ if (!empty($oldInput)) {
 }
 
 $categories = $productModel->getCategoriesForDropdown();
+include __DIR__ . "/header.php";
 
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title><?php echo htmlspecialchars($pageTitle); ?></title>
-
-    <style>
-        body {
+<style>
+        .admin-page {
             font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-            margin: 0;
             padding: 20px;
         }
 
@@ -205,9 +200,8 @@ $categories = $productModel->getCategoriesForDropdown();
             border-radius: 4px;
         }
     </style>
-</head>
-<body>
 
+<div class="admin-page">
 <div class="container">
 
     <h2><?php echo htmlspecialchars($pageTitle); ?></h2>
@@ -224,7 +218,7 @@ $categories = $productModel->getCategoriesForDropdown();
         </div>
     <?php } ?>
 
-    <form method="post" action="../Controller/productSave.php" enctype="multipart/form-data">
+    <form method="post" action="<?= $id !== "" ? url('/admin/products/edit') : url('/admin/products/create') ?>" enctype="multipart/form-data">
 
         <input type="hidden" name="id" value="<?php echo htmlspecialchars($id); ?>">
 
@@ -323,7 +317,7 @@ $categories = $productModel->getCategoriesForDropdown();
             </div>
 
             <img class="current-image"
-                 src="../<?php echo htmlspecialchars($primary_image_path); ?>"
+                 src="<?= e(product_image_url($primary_image_path)) ?>"
                  alt="Current Product Image">
 
             <div class="note">
@@ -338,12 +332,12 @@ $categories = $productModel->getCategoriesForDropdown();
         <div class="button-row">
             <button type="submit" class="btn btn-save">Save Product</button>
 
-            <a href="productList.php" class="btn btn-back">Back</a>
+            <a href="<?= url('/admin/products') ?>" class="btn btn-back">Back</a>
         </div>
 
     </form>
 
 </div>
 
-</body>
-</html>
+</div>
+<?php include __DIR__ . "/footer.php"; ?>

@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../config/helpers.php';
-require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../Model/User.php';
 
 class ProfileController {
     private User $model;
@@ -18,7 +18,7 @@ class ProfileController {
         $tab       = $_SESSION['active_tab'] ?? 'profile';
         unset($_SESSION['errors'], $_SESSION['active_tab']);
         $pageTitle = 'My Profile';
-        include __DIR__ . '/../views/profile/show.php';
+        include __DIR__ . '/../View/show.php';
     }
 
 

@@ -1,22 +1,20 @@
 <?php
 
+require_once __DIR__ . "/../config/helpers.php";
 require_once __DIR__ . "/../Model/CategoryModel.php";
+
+require_admin();
 
 $categoryModel = new CategoryModel();
 $categories = $categoryModel->getAllCategories();
+$pageTitle = "Category Management";
+include __DIR__ . "/header.php";
 
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Category List</title>
-
-    <style>
-        body {
+<style>
+        .admin-page {
             font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-            margin: 0;
             padding: 20px;
         }
 
@@ -107,9 +105,8 @@ $categories = $categoryModel->getAllCategories();
             padding: 20px;
         }
     </style>
-</head>
-<body>
 
+<div class="admin-page">
 <div class="container">
 
     <h2>Category Management</h2>
@@ -125,8 +122,8 @@ $categories = $categoryModel->getAllCategories();
     ?>
 
    <div class="top-bar">
-    <a class="btn btn-dashboard" href="adminDashboard.php">Dashboard</a>
-    <a class="btn btn-add" href="categoryForm.php">Add New Category</a>
+    <a class="btn btn-dashboard" href="<?= url('/admin/dashboard') ?>">Dashboard</a>
+    <a class="btn btn-add" href="<?= url('/admin/categories/create') ?>">Add New Category</a>
 </div>
 
     <?php if (empty($categories)) { ?>
@@ -162,11 +159,11 @@ $categories = $categoryModel->getAllCategories();
                     </td>
 
                     <td>
-                        <a class="btn btn-edit" href="categoryForm.php?id=<?php echo $category["id"]; ?>">
+                        <a class="btn btn-edit" href="<?= url('/admin/categories/edit?id=' . $category["id"]) ?>">
                             Edit
                         </a>
                         <a class="btn btn-delete"
-                           href="../Controller/categoryDelete.php?id=<?php echo $category["id"]; ?>"
+                           href="<?= url('/admin/categories/delete?id=' . $category["id"]) ?>"
                            onclick="return confirm('Are you sure you want to delete this category?');">
                             Delete
                         </a>
@@ -181,5 +178,5 @@ $categories = $categoryModel->getAllCategories();
 
 </div>
 
-</body>
-</html>
+</div>
+<?php include __DIR__ . "/footer.php"; ?>
