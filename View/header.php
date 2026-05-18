@@ -140,27 +140,29 @@ table{border-collapse:collapse;width:100%}
     <ul class="nav-links" role="list">
       <?php if ($loggedIn): ?>
         <?php if ($role === 'customer'): ?>
-          <li><a href="<?= url('/products') ?>" class="nav-a">Shop</a></li>
+          <li><a href="<?= url('/products') ?>" class="nav-a">Products</a></li>
           <li><a href="<?= url('/cart') ?>" class="nav-a" aria-label="Cart">
             Cart <?php if ($cartCount > 0): ?>
               <span class="nav-badge"><?= $cartCount ?></span>
             <?php endif; ?>
           </a></li>
-          <li><a href="<?= url('/checkout') ?>" class="nav-a">Checkout</a></li>
+          <!-- TASK 4 PART START: Customer navigation -->
+          <li><a href="<?= url('/orders') ?>" class="nav-a">My Orders</a></li>
+          <!-- TASK 4 PART END -->
         <?php endif; ?>
         <?php if ($role === 'admin'): ?>
           <li><a href="<?= url('/admin/dashboard') ?>" class="nav-a">Dashboard</a></li>
           <li><a href="<?= url('/admin/categories') ?>" class="nav-a">Categories</a></li>
           <li><a href="<?= url('/admin/products') ?>" class="nav-a">Products</a></li>
+          <!-- TASK 4 PART START: Admin navigation -->
+          <li><a href="<?= url('/admin/orders') ?>" class="nav-a">Orders</a></li>
+          <!-- TASK 4 PART END -->
         <?php endif; ?>
         <li><div class="nav-sep" aria-hidden="true"></div></li>
-        <li><a href="<?= url('/profile') ?>" class="nav-a">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-          </svg>
-          <?= e($userName) ?>
-        </a></li>
-        <li><a href="<?= url('/logout') ?>" class="btn btn-sec btn-sm">Sign Out</a></li>
+        <?php if ($role === 'customer'): ?>
+          <li><a href="<?= url('/profile') ?>" class="nav-a">Profile</a></li>
+        <?php endif; ?>
+        <li><a href="<?= url('/logout') ?>" class="btn btn-sec btn-sm">Logout</a></li>
       <?php else: ?>
         <li><a href="<?= url('/login') ?>" class="nav-a">Sign In</a></li>
         <li><a href="<?= url('/register') ?>" class="btn btn-primary btn-sm">Register</a></li>

@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . "/../config/helpers.php";
-require_once __DIR__ . "/../Model/ProductModel.php";
+require_once __DIR__ . "/../Model/2_ProductModel.php";
 
 require_admin();
 

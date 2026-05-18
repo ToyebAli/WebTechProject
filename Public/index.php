@@ -9,6 +9,10 @@ require_once BASE_PATH . '/Controller/ProfileController.php';
 require_once BASE_PATH . '/Controller/ProductController.php';
 require_once BASE_PATH . '/Controller/CartController.php';
 require_once BASE_PATH . '/Controller/CheckoutController.php';
+// TASK 4 PART START: Order and review controllers
+require_once BASE_PATH . '/Controller/4_OrderController.php';
+require_once BASE_PATH . '/Controller/4_ReviewController.php';
+// TASK 4 PART END
 
 AuthController::restoreFromCookie();
 
@@ -56,8 +60,7 @@ if ($uri === '/') {
 } elseif ($uri === '/api/products') {
     (new ProductController())->apiFilter();
 } elseif (preg_match('#^/api/products/(\d+)/reviews$#', $uri, $matches)) {
-    $_GET['id'] = $matches[1];
-    (new ProductController())->apiReviews();
+    (new Task4ReviewController())->productReviews((int)$matches[1]);
 } elseif ($uri === '/cart') {
     (new CartController())->index();
 } elseif ($uri === '/api/cart/add') {
@@ -71,56 +74,70 @@ if ($uri === '/') {
     $method === 'POST' ? $c->place() : $c->form();
 } elseif ($uri === '/checkout/confirm') {
     (new CheckoutController())->confirm();
+// TASK 4 PART START: Customer order and review routes
+} elseif ($uri === '/orders') {
+    (new Task4OrderController())->myOrders();
+} elseif ($uri === '/orders/show') {
+    (new Task4OrderController())->show();
+} elseif ($uri === '/api/reviews') {
+    (new Task4ReviewController())->create();
+// TASK 4 PART END
 } elseif ($uri === '/admin') {
     require_admin();
     redirect('/admin/dashboard');
 } elseif ($uri === '/admin/dashboard') {
     require_admin();
-    include BASE_PATH . '/View/adminDashboard.php';
+    include BASE_PATH . '/View/2_adminDashboard.php';
 } elseif ($uri === '/admin/categories') {
     require_admin();
-    include BASE_PATH . '/View/categoryList.php';
+    include BASE_PATH . '/View/2_categoryList.php';
 } elseif ($uri === '/admin/categories/create') {
     require_admin();
     if ($method === 'POST') {
-        include BASE_PATH . '/Controller/categorySave.php';
+        include BASE_PATH . '/Controller/2_categorySave.php';
     } else {
-        include BASE_PATH . '/View/categoryForm.php';
+        include BASE_PATH . '/View/2_categoryForm.php';
     }
 } elseif ($uri === '/admin/categories/edit') {
     require_admin();
     if ($method === 'POST') {
-        include BASE_PATH . '/Controller/categorySave.php';
+        include BASE_PATH . '/Controller/2_categorySave.php';
     } else {
-        include BASE_PATH . '/View/categoryForm.php';
+        include BASE_PATH . '/View/2_categoryForm.php';
     }
 } elseif ($uri === '/admin/categories/delete') {
     require_admin();
-    include BASE_PATH . '/Controller/categoryDelete.php';
+    include BASE_PATH . '/Controller/2_categoryDelete.php';
 } elseif ($uri === '/admin/products') {
     require_admin();
-    include BASE_PATH . '/View/productList.php';
+    include BASE_PATH . '/View/2_productList.php';
 } elseif ($uri === '/admin/products/create') {
     require_admin();
     if ($method === 'POST') {
-        include BASE_PATH . '/Controller/productSave.php';
+        include BASE_PATH . '/Controller/2_productSave.php';
     } else {
-        include BASE_PATH . '/View/productForm.php';
+        include BASE_PATH . '/View/2_productForm.php';
     }
 } elseif ($uri === '/admin/products/edit') {
     require_admin();
     if ($method === 'POST') {
-        include BASE_PATH . '/Controller/productSave.php';
+        include BASE_PATH . '/Controller/2_productSave.php';
     } else {
-        include BASE_PATH . '/View/productForm.php';
+        include BASE_PATH . '/View/2_productForm.php';
     }
 } elseif ($uri === '/admin/products/delete') {
     require_admin();
-    include BASE_PATH . '/Controller/productDelete.php';
+    include BASE_PATH . '/Controller/2_productDelete.php';
+// TASK 4 PART START: Admin order routes
+} elseif ($uri === '/admin/orders') {
+    (new Task4OrderController())->adminOrders();
 } elseif (preg_match('#^/api/products/(\d+)/availability$#', $uri, $matches)) {
     require_admin();
     $_GET['id'] = $matches[1];
-    include BASE_PATH . '/Controller/productAvailabilityToggle.php';
+    include BASE_PATH . '/Controller/2_productAvailabilityToggle.php';
+} elseif (preg_match('#^/api/orders/(\d+)$#', $uri, $matches)) {
+    (new Task4OrderController())->apiUpdateStatus((int)$matches[1]);
+// TASK 4 PART END
 } else {
     http_response_code(404);
     include BASE_PATH . '/View/404.php';

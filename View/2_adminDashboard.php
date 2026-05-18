@@ -12,7 +12,7 @@ include __DIR__ . "/header.php";
         }
 
         .container {
-            width: 900px;
+            width: 1100px;
             margin: auto;
             background-color: white;
             padding: 25px;
@@ -74,7 +74,7 @@ include __DIR__ . "/header.php";
     <h2>Admin Dashboard</h2>
 
     <p class="subtitle">
-        Product & Category Management Panel
+        Product, Category & Order Management Panel
     </p>
 
     <div class="card-row">
@@ -98,6 +98,16 @@ include __DIR__ . "/header.php";
                 Manage Products
             </a>
         </div>
+
+        <!-- TASK 4 PART START: Admin order management link -->
+        <div class="card">
+            <h3>Order Management</h3>
+
+            <a class="btn btn-secondary" href="<?= url('/admin/orders') ?>">
+                Manage Orders
+            </a>
+        </div>
+        <!-- TASK 4 PART END -->
 
     </div>
 

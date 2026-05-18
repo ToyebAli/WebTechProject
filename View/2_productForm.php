@@ -4,7 +4,7 @@ require_once __DIR__ . "/../config/helpers.php";
 require_admin();
 start_session_if_needed();
 
-require_once __DIR__ . "/../Model/ProductModel.php";
+require_once __DIR__ . "/../Model/2_ProductModel.php";
 
 $productModel = new ProductModel();
 
@@ -241,7 +241,7 @@ include __DIR__ . "/header.php";
         <?php } ?>
 
         <label>Price</label>
-        <input type="number" name="price" step="0.01" min="0" value="<?php echo htmlspecialchars($price); ?>">
+        <input type="text" name="price" value="<?php echo htmlspecialchars($price); ?>">
 
         <?php if (!empty($errors["price"])) { ?>
             <div class="error-text">
@@ -250,7 +250,7 @@ include __DIR__ . "/header.php";
         <?php } ?>
 
         <label>Stock Quantity</label>
-        <input type="number" name="stock_qty" min="0" value="<?php echo htmlspecialchars($stock_qty); ?>">
+        <input type="text" name="stock_qty" value="<?php echo htmlspecialchars($stock_qty); ?>">
 
         <?php if (!empty($errors["stock_qty"])) { ?>
             <div class="error-text">

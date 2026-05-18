@@ -86,6 +86,71 @@ class CategoryModel
         return $category;
     }
 
+    public function categoryNameExists($name, $parent_id, $exclude_id = null)
+    {
+        $connection = $this->db->openConnection();
+        $name = trim($name);
+
+        if ($parent_id === "" || $parent_id === null) {
+            if ($exclude_id === null) {
+                $sql = "SELECT id
+                        FROM categories
+                        WHERE parent_id IS NULL
+                        AND LOWER(TRIM(name)) = LOWER(?)
+                        LIMIT 1";
+
+                $stmt = $connection->prepare($sql);
+                $stmt->bind_param("s", $name);
+            } else {
+                $exclude_id = intval($exclude_id);
+
+                $sql = "SELECT id
+                        FROM categories
+                        WHERE parent_id IS NULL
+                        AND LOWER(TRIM(name)) = LOWER(?)
+                        AND id <> ?
+                        LIMIT 1";
+
+                $stmt = $connection->prepare($sql);
+                $stmt->bind_param("si", $name, $exclude_id);
+            }
+        } else {
+            $parent_id = intval($parent_id);
+
+            if ($exclude_id === null) {
+                $sql = "SELECT id
+                        FROM categories
+                        WHERE parent_id = ?
+                        AND LOWER(TRIM(name)) = LOWER(?)
+                        LIMIT 1";
+
+                $stmt = $connection->prepare($sql);
+                $stmt->bind_param("is", $parent_id, $name);
+            } else {
+                $exclude_id = intval($exclude_id);
+
+                $sql = "SELECT id
+                        FROM categories
+                        WHERE parent_id = ?
+                        AND LOWER(TRIM(name)) = LOWER(?)
+                        AND id <> ?
+                        LIMIT 1";
+
+                $stmt = $connection->prepare($sql);
+                $stmt->bind_param("isi", $parent_id, $name, $exclude_id);
+            }
+        }
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $exists = $result->num_rows > 0;
+
+        $stmt->close();
+        $this->db->closeConnection($connection);
+
+        return $exists;
+    }
+
     public function addCategory($name, $parent_id)
     {
         $connection = $this->db->openConnection();
