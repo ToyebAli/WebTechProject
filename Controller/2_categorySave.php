@@ -4,7 +4,7 @@ require_once __DIR__ . "/../config/helpers.php";
 require_admin();
 start_session_if_needed();
 
-require_once __DIR__ . "/../Model/CategoryModel.php";
+require_once __DIR__ . "/../Model/2_CategoryModel.php";
 
 $categoryModel = new CategoryModel();
 
@@ -69,6 +69,8 @@ if ($parent_id === "") {
             $errors["parent_id"] = "Selected parent category does not exist";
         } else if ($parentCategory["parent_id"] !== null) {
             $errors["parent_id"] = "Parent category must be a main category";
+        } else if (strtolower(trim($name)) === strtolower(trim($parentCategory["name"]))) {
+            $errors["name"] = "Child category name cannot be same as parent category";
         }
     }
 
@@ -77,6 +79,18 @@ if ($parent_id === "") {
 
         if ($childCount > 0) {
             $errors["parent_id"] = "A category with child categories cannot have a parent category";
+        }
+    }
+}
+
+if (empty($errors)) {
+    $exclude_id = ($id !== "" && ctype_digit($id)) ? intval($id) : null;
+
+    if ($categoryModel->categoryNameExists($name, $parent_id_for_save, $exclude_id)) {
+        if ($parent_id_for_save === null) {
+            $errors["name"] = "Category name already exists";
+        } else {
+            $errors["name"] = "This child category already exists under the selected parent";
         }
     }
 }

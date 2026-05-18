@@ -129,7 +129,7 @@ fetch(routeBase + '/api/products/<?= (int)$product['id'] ?>/reviews',
   .then(d=>{
     const box = document.getElementById('reviews-list');
     if (!d.ok || !d.reviews.length) {
-      box.innerHTML = '<p style="color:var(--muted);font-size:var(--sm)">No reviews yet. Be the first after receiving your order!</p>';
+      box.innerHTML = '<p style="color:var(--muted);font-size:var(--sm)">No reviews yet</p>';
       return;
     }
     box.innerHTML = d.reviews.map(rv=>{

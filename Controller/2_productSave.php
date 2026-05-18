@@ -4,7 +4,7 @@ require_once __DIR__ . "/../config/helpers.php";
 require_admin();
 start_session_if_needed();
 
-require_once __DIR__ . "/../Model/ProductModel.php";
+require_once __DIR__ . "/../Model/2_ProductModel.php";
 
 $productModel = new ProductModel();
 

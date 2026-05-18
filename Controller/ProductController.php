@@ -39,7 +39,6 @@ class ProductController {
 
     public function apiReviews(): void {
         session_guard();
-        // Task 4 is not part of this merge, so keep the endpoint harmless.
         json_response(['ok' => true, 'reviews' => []]);
     }
 }

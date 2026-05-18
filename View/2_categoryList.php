@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . "/../config/helpers.php";
-require_once __DIR__ . "/../Model/CategoryModel.php";
+require_once __DIR__ . "/../Model/2_CategoryModel.php";
 
 require_admin();
 
