@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../config/helpers.php';
-require_once __DIR__ . '/../models/Product.php';
+require_once __DIR__ . '/../Model/Product.php';
 
 class CartController {
     private Product $model;
@@ -11,7 +11,7 @@ class CartController {
         $cart      = $_SESSION['cart'] ?? [];
         $products  = $this->model->findByIds(array_keys($cart));
         $pageTitle = 'Your Cart';
-        include __DIR__ . '/../views/cart/index.php';
+        include __DIR__ . '/../View/Cart/index.php';
     }
 
     public function apiAdd(): void {

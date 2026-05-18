@@ -1,14 +1,15 @@
 <?php
 
-session_start();
+require_once __DIR__ . "/../config/helpers.php";
+require_admin();
+start_session_if_needed();
 
 require_once __DIR__ . "/../Model/ProductModel.php";
 
 $productModel = new ProductModel();
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-    header("Location: ../View/productList.php");
-    exit;
+    redirect("/admin/products");
 }
 
 $id = isset($_POST["id"]) ? trim($_POST["id"]) : "";
@@ -25,12 +26,10 @@ function redirectProductFormWithErrors($id, $oldInput, $errors)
     $_SESSION["product_errors"] = $errors;
 
     if ($id !== "") {
-        header("Location: ../View/productForm.php?id=" . urlencode($id));
+        redirect("/admin/products/edit?id=" . urlencode($id));
     } else {
-        header("Location: ../View/productForm.php");
+        redirect("/admin/products/create");
     }
-
-    exit;
 }
 
 $oldInput = [
@@ -100,7 +99,7 @@ if (!$categoryExists) {
     redirectProductFormWithErrors($id, $oldInput, $errors);
 }
 
-$uploadFolder = __DIR__ . "/../public/uploads/products/";
+$uploadFolder = __DIR__ . "/../Public/uploads/products/";
 $allowedMimeTypes = ["image/jpeg", "image/png"];
 $maxFileSize = 3 * 1024 * 1024;
 
@@ -172,8 +171,7 @@ if ($id === "") {
     );
 
     if ($success) {
-        header("Location: ../View/productList.php?success=" . urlencode("Product added successfully"));
-        exit;
+        redirect("/admin/products?success=" . urlencode("Product added successfully"));
     } else {
         $errors["general"] = "Failed to add product";
         redirectProductFormWithErrors($id, $oldInput, $errors);
@@ -184,8 +182,7 @@ if ($id === "") {
     $existingProduct = $productModel->getProductById($id);
 
     if (!$existingProduct) {
-        header("Location: ../View/productList.php?error=" . urlencode("Product not found"));
-        exit;
+        redirect("/admin/products?error=" . urlencode("Product not found"));
     }
 
     if ($newImagePath !== "") {
@@ -212,8 +209,7 @@ if ($id === "") {
     }
 
     if ($success) {
-        header("Location: ../View/productList.php?success=" . urlencode("Product updated successfully"));
-        exit;
+        redirect("/admin/products?success=" . urlencode("Product updated successfully"));
     } else {
         $errors["general"] = "Failed to update product";
         redirectProductFormWithErrors($id, $oldInput, $errors);

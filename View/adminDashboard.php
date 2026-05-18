@@ -1,13 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Admin Dashboard</title>
+<?php
+require_once __DIR__ . "/../config/helpers.php";
+require_admin();
+$pageTitle = "Admin Dashboard";
+include __DIR__ . "/header.php";
+?>
 
-    <style>
-        body {
+<style>
+        .admin-page {
             font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-            margin: 0;
             padding: 20px;
         }
 
@@ -67,9 +67,8 @@
 
        
     </style>
-</head>
-<body>
 
+<div class="admin-page">
 <div class="container">
 
     <h2>Admin Dashboard</h2>
@@ -85,7 +84,7 @@
 
            
 
-            <a class="btn" href="categoryList.php">
+            <a class="btn" href="<?= url('/admin/categories') ?>">
                 Manage Categories
             </a>
         </div>
@@ -95,7 +94,7 @@
 
             
 
-            <a class="btn btn-secondary" href="productList.php">
+            <a class="btn btn-secondary" href="<?= url('/admin/products') ?>">
                 Manage Products
             </a>
         </div>
@@ -106,5 +105,5 @@
 
 </div>
 
-</body>
-</html>
+</div>
+<?php include __DIR__ . "/footer.php"; ?>

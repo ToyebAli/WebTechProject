@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/../config/helpers.php';
-require_once __DIR__ . '/../models/Product.php';
-require_once __DIR__ . '/../models/Order.php';
-require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../Model/Product.php';
+require_once __DIR__ . '/../Model/Order.php';
+require_once __DIR__ . '/../Model/User.php';
 
 class CheckoutController {
     private Product $productModel;
@@ -25,7 +25,7 @@ class CheckoutController {
         $errors    = $_SESSION['checkout_errors'] ?? [];
         unset($_SESSION['checkout_errors']);
         $pageTitle = 'Checkout';
-        include __DIR__ . '/../views/checkout/form.php';
+        include __DIR__ . '/../View/Checkout/form.php';
     }
 
     public function place(): void {
@@ -77,6 +77,6 @@ class CheckoutController {
             http_response_code(403); die('Access denied.');
         }
         $pageTitle = 'Order Confirmed';
-        include __DIR__ . '/../views/checkout/confirm.php';
+        include __DIR__ . '/../View/Checkout/confirm.php';
     }
 }

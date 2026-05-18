@@ -1,22 +1,22 @@
 <?php
 
-header("Content-Type: application/json");
-
+require_once __DIR__ . "/../config/helpers.php";
 require_once __DIR__ . "/../Model/ProductModel.php";
+
+require_admin();
 
 $productModel = new ProductModel();
 
 $method = $_SERVER["REQUEST_METHOD"];
 
 if ($method !== "POST" && $method !== "PATCH") {
-    echo json_encode([
+    json_response([
         "ok" => false,
         "message" => "Invalid request method"
-    ]);
-    exit;
+    ], 405);
 }
 
-$id = "";
+$id = $_GET["id"] ?? "";
 
 if ($method === "POST") {
     if (isset($_POST["id"])) {
@@ -36,37 +36,32 @@ if ($method === "PATCH") {
 $id = intval($id);
 
 if ($id <= 0) {
-    echo json_encode([
+    json_response([
         "ok" => false,
         "message" => "Invalid product ID"
-    ]);
-    exit;
+    ], 422);
 }
 
 $product = $productModel->getProductById($id);
 
 if (!$product) {
-    echo json_encode([
+    json_response([
         "ok" => false,
         "message" => "Product not found"
-    ]);
-    exit;
+    ], 404);
 }
 
 $newStatus = $productModel->toggleAvailability($id);
 
 if ($newStatus === false) {
-    echo json_encode([
+    json_response([
         "ok" => false,
         "message" => "Failed to update availability"
-    ]);
-    exit;
+    ], 500);
 }
 
-echo json_encode([
+json_response([
     "ok" => true,
     "message" => "Availability updated successfully",
     "is_available" => (int)$newStatus
 ]);
-
-?>

@@ -1,6 +1,6 @@
 <?php
 if (!function_exists('e')) require_once __DIR__ . '/../../config/helpers.php';
-include __DIR__ . '/../layouts/header.php';
+include __DIR__ . '/../header.php';
 $total = 0;
 $cart  = $_SESSION['cart'] ?? [];
 foreach ($cart as $pid => $qty)
@@ -19,7 +19,7 @@ foreach ($cart as $pid => $qty)
     </div>
   <?php endif; ?>
 
-  <form method="POST" action="/checkout" novalidate>
+  <form method="POST" action="<?= url('/checkout') ?>" novalidate>
     <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
     <div style="display:grid;grid-template-columns:1fr 360px;gap:var(--s8);align-items:start">
 
@@ -111,7 +111,7 @@ foreach ($cart as $pid => $qty)
         <button type="submit" class="btn btn-primary btn-full btn-lg">
           Place Order
         </button>
-        <a href="/cart" class="btn btn-sec btn-full" style="margin-top:var(--s3)">
+        <a href="<?= url('/cart') ?>" class="btn btn-sec btn-full" style="margin-top:var(--s3)">
           &larr; Back to Cart
         </a>
       </div></div>
@@ -144,4 +144,4 @@ function pickAddr(isNew){
   else{box.style.display='none';ta.disabled=true;}
 }
 </script>
-<?php include __DIR__ . '/../layouts/footer.php'; ?>
+<?php include __DIR__ . '/../footer.php'; ?>

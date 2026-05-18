@@ -1,6 +1,6 @@
 <?php
 if (!function_exists('e')) require_once __DIR__ . '/../../config/helpers.php';
-include __DIR__ . '/../layouts/header.php';
+include __DIR__ . '/../header.php';
 $sc=['Pending'=>'b-yellow','Processing'=>'b-blue','Shipped'=>'b-orange',
      'Delivered'=>'b-green','Cancelled'=>'b-red'];
 ?>
@@ -40,7 +40,7 @@ $sc=['Pending'=>'b-yellow','Processing'=>'b-blue','Shipped'=>'b-orange',
         <div style="display:flex;align-items:center;gap:var(--s4);
                     padding:var(--s4) 0;border-bottom:1px solid var(--divider)">
           <?php if ($item['primary_image_path']): ?>
-            <img src="/public/uploads/products/<?= e($item['primary_image_path']) ?>"
+            <img src="<?= e(product_image_url($item['primary_image_path'])) ?>"
                  alt="<?= e($item['product_name']) ?>"
                  style="width:54px;height:54px;object-fit:cover;border-radius:var(--rmd);
                         border:1px solid var(--border);flex-shrink:0"
@@ -74,8 +74,7 @@ $sc=['Pending'=>'b-yellow','Processing'=>'b-blue','Shipped'=>'b-orange',
     </div></div>
 
     <div style="display:flex;gap:var(--s4)">
-      <a href="/orders" class="btn btn-primary">View My Orders</a>
-      <a href="/products" class="btn btn-sec">Continue Shopping</a>
+      <a href="<?= url('/products') ?>" class="btn btn-primary">Continue Shopping</a>
     </div>
   </div>
 </div>
@@ -92,4 +91,4 @@ $sc=['Pending'=>'b-yellow','Processing'=>'b-blue','Shipped'=>'b-orange',
   document.head.appendChild(s);
 })();
 </script>
-<?php include __DIR__ . '/../layouts/footer.php'; ?>
+<?php include __DIR__ . '/../footer.php'; ?>

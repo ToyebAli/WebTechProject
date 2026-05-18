@@ -1,12 +1,12 @@
 <?php
 if (!function_exists('e')) require_once __DIR__ . '/../../config/helpers.php';
-include __DIR__ . '/../layouts/header.php';
+include __DIR__ . '/../header.php';
 ?>
 <div class="wrap page">
   <div style="display:flex;align-items:center;justify-content:space-between;
               flex-wrap:wrap;gap:var(--s4);margin-bottom:var(--s8)">
     <div class="ph" style="margin-bottom:0"><h1>Shop</h1></div>
-    <a href="/cart" class="btn btn-sec">
+    <a href="<?= url('/cart') ?>" class="btn btn-sec">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
         <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
@@ -95,6 +95,8 @@ include __DIR__ . '/../layouts/header.php';
 
 <script>
 let timer = null;
+const routeBase = <?= json_encode(rtrim(url('/'), '/')) ?>;
+const productImageBase = <?= json_encode(rtrim(asset_url('/uploads/products/'), '/')) ?>;
 const grid   = document.getElementById('product-grid');
 const empty  = document.getElementById('empty-state');
 const skel   = document.getElementById('skeleton');
@@ -114,8 +116,9 @@ function stars(avg, cnt) {
 }
 
 function cardHtml(p) {
+  const imageName = (p.primary_image_path || '').replace(/^public\/uploads\/products\//i, '').replace(/^uploads\/products\//i, '');
   const img = p.primary_image_path
-    ? `<img src="/public/uploads/products/${p.primary_image_path}" alt="${p.name}" class="prod-img" loading="lazy" width="240" height="200">`
+    ? `<img src="${productImageBase}/${imageName}" alt="${p.name}" class="prod-img" loading="lazy" width="240" height="200">`
     : `<div class="prod-img-ph"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`;
   const stk = parseInt(p.stock_qty);
   const stockBadge = stk === 0 ? '<span class="badge b-red">Out of Stock</span>'
@@ -127,10 +130,10 @@ function cardHtml(p) {
        </button>`
     : `<button class="btn btn-full" disabled style="background:var(--divider);color:var(--muted);cursor:not-allowed">Out of Stock</button>`;
   return `<div class="prod-card">
-    <a href="/products/show?id=${p.id}" style="text-decoration:none">${img}</a>
+    <a href="${routeBase}/products/show?id=${p.id}" style="text-decoration:none">${img}</a>
     <div class="prod-body">
       <div style="font-size:var(--xs);color:var(--muted)">${p.category_name||'Uncategorised'}</div>
-      <a href="/products/show?id=${p.id}" style="font-weight:700;color:var(--text);text-decoration:none">${p.name}</a>
+      <a href="${routeBase}/products/show?id=${p.id}" style="font-weight:700;color:var(--text);text-decoration:none">${p.name}</a>
       <div>${stars(p.avg_rating, p.review_count)}</div>
       <div style="font-size:var(--lg);font-weight:700;color:var(--primary);margin-top:auto">৳${parseFloat(p.price).toFixed(2)}</div>
       ${stockBadge}
@@ -156,26 +159,26 @@ document.getElementById('search-input').addEventListener('input', function() {
   clearTimeout(timer);
   timer = setTimeout(() => {
     document.getElementById('category-filter').value = '';
-    load('/api/products/search?q=' + encodeURIComponent(this.value.trim()));
+    load(routeBase + '/api/products/search?q=' + encodeURIComponent(this.value.trim()));
   }, 280);
 });
 
 document.getElementById('category-filter').addEventListener('change', function() {
   document.getElementById('search-input').value = '';
-  load('/api/products' + (this.value ? '?category_id=' + this.value : ''));
+  load(routeBase + '/api/products' + (this.value ? '?category_id=' + this.value : ''));
 });
 
 function clearFilters() {
   document.getElementById('search-input').value = '';
   document.getElementById('category-filter').value = '';
-  load('/api/products');
+  load(routeBase + '/api/products');
 }
 document.getElementById('clear-btn').addEventListener('click', clearFilters);
 
 function addToCart(pid, btn) {
   btn.disabled = true;
   const fd = new FormData(); fd.append('product_id', pid);
-  fetch('/api/cart/add', {method:'POST',body:fd,headers:{'X-Requested-With':'XMLHttpRequest'}})
+  fetch(routeBase + '/api/cart/add', {method:'POST',body:fd,headers:{'X-Requested-With':'XMLHttpRequest'}})
     .then(r=>r.json()).then(d=>{
       if (d.ok) {
         btn.textContent = '✓ Added!';
@@ -190,4 +193,4 @@ function addToCart(pid, btn) {
     }).catch(()=>{ btn.disabled=false; });
 }
 </script>
-<?php include __DIR__ . '/../layouts/footer.php'; ?>
+<?php include __DIR__ . '/../footer.php'; ?>

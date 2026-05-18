@@ -1,13 +1,13 @@
 <?php
 if (!function_exists('e')) require_once __DIR__ . '/../../config/helpers.php';
-include __DIR__ . '/../layouts/header.php';
+include __DIR__ . '/../header.php';
 $inCart = $_SESSION['cart'][$product['id']] ?? 0;
 $stock  = (int)$product['stock_qty'];
 $avg    = (float)($product['avg_rating'] ?? 0);
 ?>
 <div class="wrap page">
   <p style="font-size:var(--sm);color:var(--muted);margin-bottom:var(--s6)">
-    <a href="/products">&larr; Back to Shop</a>
+    <a href="<?= url('/products') ?>">&larr; Back to Shop</a>
     <?php if ($product['category_name']): ?>
       &nbsp;›&nbsp; <?= e($product['category_name']) ?>
     <?php endif; ?>
@@ -18,7 +18,7 @@ $avg    = (float)($product['avg_rating'] ?? 0);
     <!-- Image -->
     <div>
       <?php if ($product['primary_image_path']): ?>
-        <img src="/public/uploads/products/<?= e($product['primary_image_path']) ?>"
+        <img src="<?= e(product_image_url($product['primary_image_path'])) ?>"
              alt="<?= e($product['name']) ?>"
              style="width:100%;border-radius:var(--rxl);box-shadow:var(--sh-md);
                     border:1px solid var(--border)" loading="lazy" width="600" height="500">
@@ -85,7 +85,7 @@ $avg    = (float)($product['avg_rating'] ?? 0);
             </svg>
             <?= $inCart>0?"Add More ({$inCart} in cart)":'Add to Cart' ?>
           </button>
-          <a href="/cart" class="btn btn-sec btn-lg">View Cart</a>
+          <a href="<?= url('/cart') ?>" class="btn btn-sec btn-lg">View Cart</a>
         </div>
       <?php else: ?>
         <button class="btn btn-lg" disabled
@@ -121,8 +121,9 @@ $avg    = (float)($product['avg_rating'] ?? 0);
 
 <script>
 const badge = document.getElementById('cart-badge');
+const routeBase = <?= json_encode(rtrim(url('/'), '/')) ?>;
 
-fetch('/api/products/<?= (int)$product['id'] ?>/reviews',
+fetch(routeBase + '/api/products/<?= (int)$product['id'] ?>/reviews',
       {headers:{'X-Requested-With':'XMLHttpRequest'}})
   .then(r=>r.json())
   .then(d=>{
@@ -155,7 +156,7 @@ fetch('/api/products/<?= (int)$product['id'] ?>/reviews',
 function addToCartDetail(pid, btn) {
   btn.disabled = true;
   const fd = new FormData(); fd.append('product_id', pid);
-  fetch('/api/cart/add',{method:'POST',body:fd,headers:{'X-Requested-With':'XMLHttpRequest'}})
+  fetch(routeBase + '/api/cart/add',{method:'POST',body:fd,headers:{'X-Requested-With':'XMLHttpRequest'}})
     .then(r=>r.json()).then(d=>{
       btn.disabled = false;
       if (d.ok) {
@@ -175,7 +176,7 @@ function addToCartDetail(pid, btn) {
 
 function adjustCart(pid, action) {
   const fd = new FormData(); fd.append('product_id',pid); fd.append('action',action);
-  fetch('/api/cart/update',{method:'POST',body:fd,headers:{'X-Requested-With':'XMLHttpRequest'}})
+  fetch(routeBase + '/api/cart/update',{method:'POST',body:fd,headers:{'X-Requested-With':'XMLHttpRequest'}})
     .then(r=>r.json()).then(d=>{
       if (!d.ok) return;
       document.getElementById('qty-disp').textContent = d.qty;
@@ -187,4 +188,4 @@ function adjustCart(pid, action) {
     }).catch(()=>{});
 }
 </script>
-<?php include __DIR__ . '/../layouts/footer.php'; ?>
+<?php include __DIR__ . '/../footer.php'; ?>

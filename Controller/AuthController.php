@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../config/helpers.php';
-require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../Model/User.php';
 
 class AuthController {
     private User $model;
@@ -9,13 +9,13 @@ class AuthController {
     public function registerForm(): void {
         if (session_status() === PHP_SESSION_NONE) session_start();
         if (!empty($_SESSION['user_id'])) {
-            redirect($_SESSION['role'] === 'admin' ? '/admin/products' : '/products');
+            redirect($_SESSION['role'] === 'admin' ? '/admin/dashboard' : '/products');
         }
         $errors    = $_SESSION['errors'] ?? [];
         $old       = $_SESSION['old']    ?? [];
         $pageTitle = 'Create Account';
         unset($_SESSION['errors'], $_SESSION['old']);
-        include __DIR__ . '/../views/auth/register.php';
+        include __DIR__ . '/../View/register.php';
     }
 
     public function register(): void {
@@ -47,13 +47,13 @@ class AuthController {
     public function loginForm(): void {
         if (session_status() === PHP_SESSION_NONE) session_start();
         if (!empty($_SESSION['user_id'])) {
-            redirect($_SESSION['role'] === 'admin' ? '/admin/products' : '/products');
+            redirect($_SESSION['role'] === 'admin' ? '/admin/dashboard' : '/products');
         }
         $errors    = $_SESSION['errors'] ?? [];
         $old       = $_SESSION['old']    ?? [];
         $pageTitle = 'Sign In';
         unset($_SESSION['errors'], $_SESSION['old']);
-        include __DIR__ . '/../views/auth/login.php';
+        include __DIR__ . '/../View/login.php';
     }
 
     public function login(): void {
@@ -83,7 +83,7 @@ class AuthController {
                 'samesite' => 'Lax',
             ]);
         }
-        redirect($user['role'] === 'admin' ? '/admin/products' : '/products');
+        redirect($user['role'] === 'admin' ? '/admin/dashboard' : '/products');
     }
 
     public function logout(): void {

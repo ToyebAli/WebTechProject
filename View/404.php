@@ -1,11 +1,11 @@
 <?php
-if (!function_exists('e')) require_once __DIR__ . '/../../config/helpers.php';
+if (!function_exists('e')) require_once __DIR__ . '/../config/helpers.php';
 if (session_status() === PHP_SESSION_NONE) session_start();
 $pageTitle = '404 Not Found';
-include __DIR__ . '/../layouts/header.php';
+include __DIR__ . '/header.php';
 $home = !empty($_SESSION['user_id'])
-    ? ($_SESSION['role'] === 'admin' ? '/admin/products' : '/products')
-    : '/login';
+    ? ($_SESSION['role'] === 'admin' ? url('/admin/dashboard') : url('/products'))
+    : url('/login');
 ?>
 <div class="wrap page" style="min-height:60vh;display:flex;align-items:center;justify-content:center">
   <div class="empty">
@@ -27,4 +27,4 @@ $home = !empty($_SESSION['user_id'])
     </a>
   </div>
 </div>
-<?php include __DIR__ . '/../layouts/footer.php'; ?>
+<?php include __DIR__ . '/footer.php'; ?>

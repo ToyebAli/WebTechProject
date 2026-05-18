@@ -6,9 +6,9 @@ foreach ($products as $p):
     $avg    = (float)($p['avg_rating'] ?? 0);
 ?>
 <div class="prod-card">
-  <a href="/products/show?id=<?= (int)$p['id'] ?>" style="text-decoration:none">
+  <a href="<?= url('/products/show?id=' . (int)$p['id']) ?>" style="text-decoration:none">
     <?php if ($p['primary_image_path']): ?>
-      <img src="/public/uploads/products/<?= e($p['primary_image_path']) ?>"
+      <img src="<?= e(product_image_url($p['primary_image_path'])) ?>"
            alt="<?= e($p['name']) ?>" class="prod-img"
            loading="lazy" width="240" height="200">
     <?php else: ?>
@@ -22,7 +22,7 @@ foreach ($products as $p):
   </a>
   <div class="prod-body">
     <div style="font-size:var(--xs);color:var(--muted)"><?= e($p['category_name'] ?? 'Uncategorised') ?></div>
-    <a href="/products/show?id=<?= (int)$p['id'] ?>"
+    <a href="<?= url('/products/show?id=' . (int)$p['id']) ?>"
        style="font-weight:700;color:var(--text);text-decoration:none"><?= e($p['name']) ?></a>
     <div>
       <span class="stars">
